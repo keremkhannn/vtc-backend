@@ -29,8 +29,14 @@ const createConnection = async () => {
     }
 };
 
-// TruckersHub WebSocket bağlantısı
+// TruckersHub WebSocket bağlantısı (sadece local development)
 const connectToTruckersHub = async () => {
+    // Vercel'de WebSocket çalışmaz, sadece local'de çalışsın
+    if (process.env.NODE_ENV === 'production') {
+        console.log('WebSocket bağlantısı Vercel\'de desteklenmiyor');
+        return;
+    }
+    
     try {
         const ws = new WebSocket('wss://gateway.truckershub.in/');
         
@@ -216,11 +222,14 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
-// Server başlat
-app.listen(PORT, () => {
-    console.log(`Server ${PORT} portunda çalışıyor`);
-    connectToTruckersHub();
-});
-
-// Vercel için export
+// Vercel için export (serverless functions)
 module.exports = app;
+
+// Local development için server başlat
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server ${PORT} portunda çalışıyor`);
+        // WebSocket sadece local'de çalışsın
+        connectToTruckersHub();
+    });
+}

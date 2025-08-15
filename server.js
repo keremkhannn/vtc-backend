@@ -222,7 +222,7 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
-// Vercel için export (serverless functions)
+// Vercel için export (serverless functions) - Updated
 module.exports = app;
 
 // Local development için server başlat
